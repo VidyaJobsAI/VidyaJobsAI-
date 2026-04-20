@@ -19,13 +19,16 @@ from dotenv import load_dotenv
 # Local testing ke liye keys load karega
 load_dotenv()
 
-app = Flask(__name__)
+# --- FIX 1: Static and Template folders defined clearly for Render ---
+app = Flask(__name__, 
+            static_folder='static', 
+            template_folder='templates', 
+            static_url_path='/static')
 CORS(app)
 
 # ===============================
 # CONFIG & API KEYS (SECURE)
 # ===============================
-# Maine ise environment variable kar diya hai taaki tera GitHub leak na ho
 SERPER_API_KEY = os.getenv("SERPER_API_KEY") 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
@@ -51,7 +54,7 @@ chat_messages = [
 
 # MODEL LIST (AUTO FALLBACK)
 MODELS = [
-    "google/gemini-2.0-flash-001", # Sabse fast hai, ise top pe rakha hai
+    "google/gemini-2.0-flash-001",
     "openai/gpt-4o-mini",
     "openai/gpt-3.5-turbo",
     "google/gemini-2.0-flash-lite-preview-02-05:free",
@@ -75,22 +78,13 @@ def save_user_chat(uid, data):
     with open(get_chat_file(uid), "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-# --- NEW FUNCTIONS ---
 def get_live_data(query):
-    # Check if key exists
     if not SERPER_API_KEY:
         return "Serper API key missing."
-        
     headers = {"X-API-KEY": SERPER_API_KEY, "Content-Type": "application/json"}
     payload = {"q": query, "gl": "in", "hl": "en"}
-
     try:
-        r = requests.post(
-            "https://google.serper.dev/search",
-            headers=headers,
-            json=payload,
-            timeout=10
-        )
+        r = requests.post("https://google.serper.dev/search", headers=headers, json=payload, timeout=10)
         results = r.json().get("organic", [])
         context = ""
         for item in results[:5]:
@@ -99,41 +93,21 @@ def get_live_data(query):
     except:
         return ""
 
-# 🔥 TERA UPDATED FALLBACK LOGIC (DYNAMIC TIMEOUT)
 def ask_ai(messages):
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json"
     }
-
-    # Loop through models
     for model_name in MODELS:
         try:
-            # Gemini ke liye 20 sec, baaki ke liye 8 sec
             current_timeout = 20 if "gemini" in model_name.lower() else 8
-            
-            payload = {
-                "model": model_name,
-                "messages": messages,
-                "temperature": 0.7
-            }
-
-            r = requests.post(
-                "https://openrouter.ai/api/v1/chat/completions",
-                headers=headers,
-                json=payload,
-                timeout=current_timeout
-            )
-
+            payload = {"model": model_name, "messages": messages, "temperature": 0.7}
+            r = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=current_timeout)
             if r.status_code == 200:
                 return r.json()["choices"][0]["message"]["content"]
-            else:
-                print(f"Model {model_name} failed, trying next...")
-                continue
-        except Exception as e:
-            print(f"Error calling {model_name}: {e}")
             continue
-
+        except Exception as e:
+            continue
     return "Bhai saare models busy hain, thodi der baad try kar! 😅"
 
 # --- BASIC ROUTES ---
@@ -190,7 +164,6 @@ def fetch_jobs():
         category = data.get('category', 'latest jobs')
         edu = data.get('edu', '')
         query = data.get('query')
-
         if query:
             final_query = query
         elif "Railway" in category or "RRB" in category:
@@ -203,7 +176,6 @@ def fetch_jobs():
             final_query = f"Bihar Police {category} result update site:csbc.bih.nic.in OR site:sarkariresult.com"
         else:
             final_query = f"latest {category} vacancies for {edu} pass 2026 India"
-
         headers = {'X-API-KEY': SERPER_API_KEY, 'Content-Type': 'application/json'}
         payload = {'q': final_query, 'num': 20, 'gl': 'in'}
         response = requests.post('https://google.serper.dev/search', headers=headers, json=payload)
@@ -233,14 +205,12 @@ def generate_resume():
             data = request.json
         else:
             data = request.form
-            
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Arial", 'B', 16)
         pdf.cell(200, 10, txt="V10 ULTRA RESUME", ln=True, align='C')
         pdf.ln(10)
         pdf.set_font("Arial", size=12)
-        
         if not request.is_json:
             pdf.cell(200, 10, txt=f"Name: {data.get('name', 'N/A')}", ln=True)
             pdf.cell(200, 10, txt=f"Education: {data.get('edu', 'N/A')}", ln=True)
@@ -249,7 +219,6 @@ def generate_resume():
         else:
             for k, v in data.items():
                 pdf.cell(200, 10, f"{k}: {v}", ln=True)
-
         output = io.BytesIO()
         pdf_content = pdf.output(dest='S').encode('latin-1')
         output.write(pdf_content)
@@ -309,55 +278,35 @@ def generate_image():
     except Exception as e:
         return jsonify({"error": str(e)})
 
-# --- UPDATED ROUTE ---
 @app.route("/ask_ai_v10", methods=["POST"])
 def ask_ai_v10():
     try:
         data = request.json
         msg = data.get("message")
         uid = data.get("uid", "guest")
-
         history = load_user_chat(uid)
-
         keywords = ["job", "latest", "news", "result", "update", "vacancy"]
         need_live = any(k in msg.lower() for k in keywords)
-
         live_context = ""
         if need_live:
             live_context = get_live_data(msg)
-
-        system_prompt = f"""
-You are VidyaJobsAI-HUB V10 ULTRA AI.
-RULES:
-- Always use latest info if provided
-- If live data exists, prioritize it
-- Be accurate and simple
-LIVE DATA:
-{live_context}
-"""
+        system_prompt = f"You are VidyaJobsAI-HUB V10 ULTRA AI.\nRULES:\n- Always use latest info if provided\n- If live data exists, prioritize it\n- Be accurate and simple\nLIVE DATA:\n{live_context}"
         messages = [{"role": "system", "content": system_prompt}]
         messages += history[-10:]
         messages.append({"role": "user", "content": msg})
-
         answer = ask_ai(messages)
-
         history.append({"role": "user", "content": msg})
         history.append({"role": "assistant", "content": answer})
         save_user_chat(uid, history)
-
         return jsonify({"reply": answer, "live_used": bool(live_context)})
     except Exception as e:
         return jsonify({"reply": "AI system busy hai bhai 😅", "error": str(e)})
 
-# ===============================
-# CHAT MANAGEMENT
-# ===============================
 @app.route("/save_chat", methods=["POST"])
 def save_chat():
     try:
         data = request.json
-        uid = data.get("uid")
-        chats = data.get("chats")
+        uid = data.get("uid"); chats = data.get("chats")
         save_user_chat(uid, chats)
         return jsonify({"success": True})
     except Exception as e:
@@ -367,8 +316,7 @@ def save_chat():
 def load_chat():
     try:
         data = request.json
-        uid = data.get("uid")
-        chats = load_user_chat(uid)
+        uid = data.get("uid"); chats = load_user_chat(uid)
         return jsonify({"success": True, "chats": chats})
     except Exception as e:
         return jsonify({"error": str(e)})
@@ -394,7 +342,6 @@ def delete_chat():
     except Exception as e:
         return jsonify({"error": str(e)})
 
-# --- COMMUNITY CHAT SYSTEM ---
 @app.route('/get_messages')
 def get_messages():
     return jsonify(chat_messages)
@@ -402,13 +349,11 @@ def get_messages():
 @app.route('/send_message', methods=['POST'])
 def send_message():
     data = request.get_json()
-    new_msg = {
-        "user": data.get('user', 'Guest'), 
-        "msg": data.get('msg', ''), 
-        "time": time.strftime("%I:%M %p")
-    }
+    new_msg = {"user": data.get('user', 'Guest'), "msg": data.get('msg', ''), "time": time.strftime("%I:%M %p")}
     chat_messages.append(new_msg)
     return jsonify({"status": "sent", "ok": True})
 
+# --- FIX 2: Render compatibility for host and port ---
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
