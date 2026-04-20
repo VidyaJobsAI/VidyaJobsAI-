@@ -60,6 +60,251 @@
     </div>
 </header>
 
+<div class="container">
+    <div id="login-sec" class="hidden">
+        <div class="login-card">
+            <h1 style="text-align:center; font-weight:900;">Welcome! 🚀</h1>
+            <label>Full Name</label>
+            <input type="text" id="u-name" class="input-box" placeholder="e.g. Rahul Raj">
+            <label>Education</label>
+            <div class="edu-grid">
+                <div class="edu-chip" onclick="toggleEdu(this, '10th')">10th Pass</div>
+                <div class="edu-chip" onclick="toggleEdu(this, '12th')">12th Pass</div>
+                <div class="edu-chip" onclick="toggleEdu(this, 'ITI')">ITI Pass</div>
+                <div class="edu-chip" onclick="toggleEdu(this, 'UG')">Undergraduate</div>
+            </div>
+            <button onclick="saveLogin()" class="btn-primary">Save Profile ⚡</button>
+        </div>
+    </div>
+
+    <div id="v10-ultra-dash" class="hidden">
+        <h3 style="font-weight:800; color:var(--blue);">🔥 V10 ULTRA AI TOOLS</h3>
+        <div class="dash-grid" style="margin-bottom:20px;">
+            <div class="edu-chip" onclick="showBox('ocr-box')">Image to Text</div>
+            <div class="edu-chip" onclick="showBox('pdf-box')">PDF Reader</div>
+        </div>
+        <div id="ocr-box" class="box">
+            <label>Upload Image for OCR</label>
+            <input type="file" id="img-input" class="input-box" accept="image/*">
+            <button onclick="performOCR()" class="btn-primary">Extract Text 🔍</button>
+            <pre id="ocrout" style="margin-top:10px;">Text result will appear here...</pre>
+        </div>
+        <div id="pdf-box" class="box">
+            <label>Upload PDF File</label>
+            <input type="file" id="pdfFile-input" class="input-box" accept=".pdf">
+            <button onclick="readPDFFile()" class="btn-primary">Read PDF 📄</button>
+            <pre id="pdfout" style="margin-top:10px;">PDF text will appear here...</pre>
+        </div>
+        <button onclick="showDash()" class="btn-load">Back to Home</button>
+    </div>
+
+    <div id="resume-sec" class="hidden">
+        <h3 style="font-weight:800;">AI Resume Builder 📄</h3>
+        <div class="card">
+            <label>Father's Name</label>
+            <input type="text" id="res-father" class="input-box" placeholder="Enter Father's Name">
+            <label>Skills</label>
+            <input type="text" id="res-skills" class="input-box" placeholder="e.g. Computer, ITI, Driving">
+            <label>Experience</label>
+            <textarea id="res-exp" class="input-box" style="height:80px;" placeholder="Any past work?"></textarea>
+            <button class="btn-primary resume-btn" onclick="downloadResume()">Download Resume 📥</button>
+            <button onclick="showDash()" style="width:100%; margin-top:10px; background:none; border:none; color:var(--text-muted); font-weight:800;">Back to Home</button>
+        </div>
+    </div>
+
+    <div id="dash-sec" class="hidden">
+        <div class="live-panel">
+            <div class="live-header">
+                <div class="live-dot"></div>
+                <span style="color:white; font-weight:800; font-size:14px;">LIVE UPDATES 🛰️</span>
+            </div>
+            <div class="ticker-container">
+                <div class="ticker-col">
+                    <div class="ticker-title">New Jobs</div>
+                    <div id="job-ticker" class="scroll-box"><div class="ticker-item">Loading...</div></div>
+                </div>
+                <div class="ticker-col">
+                    <div class="ticker-title">Admit Cards</div>
+                    <div id="admit-ticker" class="scroll-box"><div class="ticker-item">Loading...</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ai-search-container">
+            <div class="ai-search-inner">
+                <span class="ai-sparkle">✦</span>
+                <input type="text" id="main-search-inp" class="ai-search-input" placeholder="Ask anything (Hinglish/Eng)...">
+                <button class="voice-btn" onclick="startMicV10Search()">🎙️</button>
+                <button onclick="triggerSearch()" class="ai-btn">✨</button>
+            </div>
+            <div class="ai-mode-tag">App AI Support</div>
+        </div>
+
+        <div class="tracker-card">
+            <div style="font-weight:800; color:var(--blue); font-size:14px; margin-bottom:10px;">📅 DAILY EXAM TARGET</div>
+            <div class="target-item"><input type="checkbox"> Today's Current Affairs</div>
+            <div class="target-item"><input type="checkbox"> Math/Reasoning Practice</div>
+            <div class="target-item"><input type="checkbox"> Science/GK Revision</div>
+        </div>
+
+        <h3 style="font-weight:800;">Top Categories</h3>
+        <div class="dash-grid">
+            <div class="dash-card" onclick="openJobs('latest Govt job vacancy 2026 apply online')"><i>🏛️</i><span>Govt Jobs</span></div>
+            <div class="dash-card" onclick="openJobs('new Railway recruitment vacancy 2026 NTPC Group D ALP')"><i>🚂</i><span>Railway</span></div>
+            <div class="dash-card" onclick="openJobs('latest ITI Pass Govt Jobs vacancy 2026 Apprentice')"><i>⚙️</i><span>ITI Jobs</span></div>
+            <div class="dash-card" onclick="openJobs('latest Remote work from home jobs vacancy 2026')"><i>🏠</i><span>Remote/WFH</span></div>
+        </div>
+
+        <h3 style="font-weight:800; margin-top:30px;">Help Desk 👥</h3>
+        <div class="comm-btn" onclick="showCommunityChat()">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div style="background:var(--light-blue); width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px;">💬</div>
+                <div>
+                    <div style="font-weight:800; font-size:14px;">Community Help</div>
+                    <div style="font-size:11px; color:var(--text-muted);">Ask doubts & chat with others</div>
+                </div>
+            </div>
+            <div style="color:var(--blue); font-weight:800;">OPEN</div>
+        </div>
+
+        <h3 style="font-weight:800; margin-top:30px;">Direct Support</h3>
+        <a href="https://whatsapp.com/channel/0029VbCL3cTElagwBiU2aJ2N" target="_blank" class="social-link-card">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="social-icon" style="background:#e7fbf0; color:#22c55e;">💬</div>
+                <div><div style="font-weight:800; font-size:14px;">WhatsApp Channel</div><div style="font-size:11px;">Join for daily updates</div></div>
+            </div>
+            <div style="color:var(--blue); font-weight:800;">JOIN</div>
+        </a>
+
+        <a href="https://www.instagram.com/___rahul_yadav_._?igsh=b3ltc2FwaDd4bzB1" target="_blank" class="social-link-card">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="social-icon" style="background:#fff0f6; color:#e1306c;">📸</div>
+                <div><div style="font-weight:800; font-size:14px;">Instagram Profile</div><div style="font-size:11px;">Follow for latest updates</div></div>
+            </div>
+            <div style="color:var(--blue); font-weight:800;">FOLLOW</div>
+        </a>
+    </div>
+
+    <div id="chat-sec" class="hidden">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
+            <button onclick="showDash()" style="border:none; background:none; font-size:20px; cursor:pointer;">⬅️</button>
+            <h3 style="margin:0; font-weight:800;">Community Chat</h3>
+        </div>
+        <div class="chat-container">
+            <div id="chat-display" class="chat-display"></div>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="chat-input" class="input-box" placeholder="Type your doubt..." style="margin:0;">
+                <button onclick="sendMessage()" class="ai-btn" style="border-radius:12px; width:50px; height:50px;">📤</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="res-sec" class="hidden">
+        <h3 style="font-weight:800; margin-bottom:15px;">Results Portal 📄</h3>
+        <div class="dash-grid">
+            <div class="dash-card" onclick="toggleResSub('magadh')" style="border: 2px solid var(--blue); background: var(--light-blue);"><i>🎓</i><span style="font-weight:800;">Magadh Uni.</span></div>
+            <div class="dash-card" onclick="toggleResSub('bihar-board')"><i>🏫</i><span>Bihar Board</span></div>
+            <div class="dash-card" onclick="toggleResSub('railway')"><i>🚂</i><span>Railway</span></div>
+            <div class="dash-card" onclick="toggleResSub('ssc')"><i>🦁</i><span>SSC</span></div>
+            <div class="dash-card" onclick="toggleResSub('police')"><i>👮</i><span>Bihar Police</span></div>
+        </div>
+
+        <div id="sub-magadh" class="card hidden" style="margin-top:15px; background:var(--white); border: 2px solid var(--blue);">
+            <label>Select Session</label>
+            <select id="mu-session" class="year-input" style="margin-bottom:15px; width:100%;" onchange="updateMUSemButtons()">
+                <option value="">-- Choose Session --</option>
+                <option value="2024-28">Session 2024-2028</option>
+                <option value="2023-27">Session 2023-2027</option>
+                <option value="2022-26">Session 2022-2026</option>
+                <option value="2022-25">Session 2022-2025</option>
+                <option value="2021-24">Session 2021-2024</option>
+                <option value="2020-23">Session 2020-2023</option>
+            </select>
+            <label id="mu-type-label">Select Option</label>
+            <div id="mu-sem-container" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:15px;" class="hidden">
+                <button onclick="setResType(this, 'Semester 1')" class="pill">Sem 1</button>
+                <button onclick="setResType(this, 'Semester 2')" class="pill">Sem 2</button>
+                <button onclick="setResType(this, 'Semester 3')" class="pill">Sem 3</button>
+                <button onclick="setResType(this, 'Semester 4')" class="pill">Sem 4</button>
+                <button onclick="setResType(this, 'Semester 5')" class="pill">Sem 5</button>
+                <button onclick="setResType(this, 'Semester 6')" class="pill">Sem 6</button>
+                <button onclick="setResType(this, 'Semester 7')" class="pill">Sem 7</button>
+                <button onclick="setResType(this, 'Semester 8')" class="pill">Sem 8</button>
+            </div>
+            <div id="mu-part-container" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:15px;" class="hidden">
+                <button onclick="setResType(this, 'Part 1')" class="pill">Part 1</button>
+                <button onclick="setResType(this, 'Part 2')" class="pill">Part 2</button>
+                <button onclick="setResType(this, 'Part 3')" class="pill">Part 3</button>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;" id="mu-action-grid">
+                <button onclick="muAction('Result')" class="btn-primary" style="padding:12px; font-size:12px; background:#28a745;">Check Result ✅</button>
+                <button id="mu-btn-exam" onclick="muAction('Exam Form')" class="btn-primary" style="padding:12px; font-size:12px; background:#ffc107; color:black;">Exam Form 📝</button>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
+                <button id="mu-btn-adm" onclick="muAction('Admission')" class="btn-load" style="margin:0; width:100%; border-color:#17a2b8; color:#17a2b8;">Admission 🎓</button>
+                <button onclick="muAction('Admit Card')" class="btn-load" style="margin:0; width:100%;">Admit Card 📥</button>
+            </div>
+        </div>
+
+        <div id="sub-bihar-board" class="card hidden" style="margin-top:15px; background:var(--light-blue);">
+            <div style="display:flex; gap:10px;"><button onclick="setResType(this, 'Matric')" class="pill" style="flex:1;">Matric (10th)</button><button onclick="setResType(this, 'Inter')" class="pill" style="flex:1;">Inter (12th)</button></div>
+            <input type="number" id="year-bihar" class="year-input" placeholder="Enter Year (e.g. 2025)">
+            <button onclick="finalResSearch('Bihar Board', 'year-bihar')" class="btn-primary" style="margin-top:10px;">Check Result ✅</button>
+        </div>
+
+        <div id="sub-railway" class="card hidden" style="margin-top:15px; background:var(--light-blue);">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                <button onclick="setResType(this, 'Group D')" class="pill">Group D</button>
+                <button onclick="setResType(this, 'ALP')" class="pill">ALP</button>
+                <button onclick="setResType(this, 'NTPC')" class="pill">NTPC</button>
+                <button onclick="setResType(this, 'Technician')" class="pill">Technician</button>
+            </div>
+            <input type="number" id="year-railway" class="year-input" placeholder="Enter Year (e.g. 2024)">
+            <button onclick="finalResSearch('Railway', 'year-railway')" class="btn-primary" style="margin-top:10px;">Check Result ✅</button>
+        </div>
+
+        <div id="sub-ssc" class="card hidden" style="margin-top:15px; background:var(--light-blue);">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                <button onclick="setResType(this, 'SSC MTS')" class="pill">MTS</button>
+                <button onclick="setResType(this, 'SSC GD')" class="pill">GD</button>
+                <button onclick="setResType(this, 'SSC CGL')" class="pill">CGL</button>
+                <button onclick="setResType(this, 'SSC CHSL')" class="pill">CHSL</button>
+            </div>
+            <input type="number" id="year-ssc" class="year-input" placeholder="Enter Year (e.g. 2025)">
+            <button onclick="finalResSearch('SSC', 'year-ssc')" class="btn-primary" style="margin-top:10px;">Check Result ✅</button>
+        </div>
+
+        <div id="sub-police" class="card hidden" style="margin-top:15px; background:var(--light-blue);">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                <button onclick="setResType(this, 'Constable')" class="pill">Constable</button>
+                <button onclick="setResType(this, 'SI')" class="pill">SI (Daroga)</button>
+                <button onclick="setResType(this, 'Driver')" class="pill">Driver</button>
+            </div>
+            <input type="number" id="year-police" class="year-input" placeholder="Enter Year (e.g. 2024)">
+            <button onclick="finalResSearch('Bihar Police', 'year-police')" class="btn-primary" style="margin-top:10px;">Check Result ✅</button>
+        </div>
+    </div>
+
+    <div id="feed-sec" class="hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <button onclick="goBackToList()" id="back-btn" class="hidden" style="color:var(--blue); border:none; background:none; font-weight:800;">← Back</button>
+            <h3 id="f-title" style="margin:0; font-weight:800; font-size:16px;">LISTING</h3>
+            <button onclick="showDash()" style="color:var(--blue); border:none; background:none; font-weight:800;">Home</button>
+        </div>
+        <div id="list"></div>
+        <div id="load-more-container" class="hidden">
+            <button onclick="loadMore()" class="btn-load">Load More 🔄</button>
+        </div>
+    </div>
+</div>
+
+<div id="bottom-bar" class="bottom-nav hidden">
+    <div class="nav-item active" onclick="showDash()"><i>🏠</i>Home</div>
+    <div class="nav-item" onclick="showResults()"><i>📄</i>Results</div>
+    <div class="nav-item" onclick="openV10Home()"><i>🤖</i>AI Chat</div>
+    <div class="nav-item" onclick="toggleMenu()"><i>⚙️</i>Settings</div>
+</div>
+
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
