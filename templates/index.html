@@ -3,309 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VidyaJobs.AI - Professional Portal</title>
+    <title>ROZGAR HUB | Professional Portal</title>
     
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#007bff">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #eff6ff;
+            --accent: #7c3aed;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --radius: 20px;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            --ai-gradient: linear-gradient(135deg, #2563eb, #7c3aed);
+        }
+
+        body.dark-mode {
+            --bg: #020617;
+            --card-bg: #1e293b;
+            --text-dark: #f1f5f9;
+            --text-muted: #94a3b8;
+            --primary-light: #1e3a8a;
+        }
+
+        body { 
+            background: var(--bg); 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            margin: 0; 
+            padding-bottom: 100px; 
+            color: var(--text-dark);
+            transition: 0.3s;
+        }
+
+        .container { max-width: 500px; margin: 0 auto; padding: 20px; }
+
+        /* Header UI */
+        header { 
+            background: var(--card-bg); 
+            padding: 18px 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .logo-text { 
+            font-weight: 800; 
+            font-size: 22px; 
+            background: var(--ai-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Live Panel Fix */
+        .live-panel { 
+            background: #0f172a; 
+            border-radius: var(--radius); 
+            padding: 20px; 
+            margin-bottom: 25px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .live-panel::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%);
+        }
+
+        /* Dashboard Grid - Fixes your "Low Level" UI */
+        .dash-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 15px; 
+            margin-top: 20px; 
+        }
+
+        .dash-card { 
+            background: var(--card-bg); 
+            padding: 20px 15px; 
+            border-radius: var(--radius); 
+            text-align: center; 
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.02);
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .dash-card:active { transform: scale(0.95); }
+
+        .dash-card i { 
+            font-size: 28px; 
+            margin-bottom: 12px; 
+            display: block; 
+            color: var(--primary);
+        }
+
+        .dash-card span { font-weight: 700; font-size: 14px; color: var(--text-dark); }
+
+        /* AI Search Bar - High Level */
+        .ai-search-container { 
+            background: var(--card-bg);
+            border-radius: 30px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 25px 0;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.1);
+            border: 1px solid var(--primary-light);
+        }
+
+        .ai-search-input { 
+            flex: 1; border: none; outline: none; 
+            background: transparent; font-weight: 600; 
+            color: var(--text-dark);
+        }
+
+        /* Bottom Nav - App Like */
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 50%; 
+            transform: translateX(-50%); width: 100%; 
+            max-width: 500px; background: var(--card-bg); 
+            display: flex; justify-content: space-around; 
+            padding: 12px 0; border-top-left-radius: 25px;
+            border-top-right-radius: 25px;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.08); 
+            z-index: 999;
+        }
+
+        .nav-item { 
+            text-align: center; color: var(--text-muted); 
+            font-size: 11px; font-weight: 700; 
+            flex: 1;
+        }
+
+        .nav-item.active { color: var(--primary); }
+        .nav-item i { font-size: 22px; display: block; margin-bottom: 4px; }
+
+        /* Premium Buttons */
+        .btn-primary { 
+            background: var(--ai-gradient); 
+            color: white; border: none; 
+            padding: 16px; border-radius: 16px; 
+            font-weight: 800; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        /* Cards & Components */
+        .card { 
+            background: var(--card-bg); 
+            border-radius: var(--radius); 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            box-shadow: var(--shadow);
+        }
+
+        /* Results Portal - Cleaned */
+        .portal-btn-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .portal-item {
+            background: var(--primary-light);
+            padding: 18px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 700;
+            color: var(--primary);
+            border: 1px solid rgba(37, 99, 235, 0.1);
+        }
+
+        .hidden { display: none !important; }
+        
+        /* Floating AI Button */
+        #ai-trigger {
+            position: fixed; bottom: 90px; right: 20px;
+            background: var(--ai-gradient);
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
+            z-index: 1001;
+        }
+        #ai-trigger i { color: white; font-size: 24px; }
+    </style>
 </head>
-<body id="app-body">
-
-<div id="ai-modal">
-    <div class="ai-modal-content">
-        <div class="ai-modal-header">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <button onclick="backHomeV10()" style="background:none; border:none; font-size:22px; color:var(--blue); cursor:pointer;">⬅</button>
-                <span style="font-weight: 800; color: var(--blue);">🤖 VidyaJobs AI V10 PRO</span>
-            </div>
-            <span style="font-size:10px; font-weight:800; color:var(--text-muted);">ONLINE</span>
-        </div>
-        <div class="v8-chat-box">
-            <div id="ai-chat-body" class="v8-messages"></div>
-            <div class="v8-input-box">
-                <button id="voiceBtn" style="background:none; border:none; font-size:20px; cursor:pointer;">🎙️</button>
-                <input type="text" id="ai-input" class="v8-input" placeholder="Kuch bhi puchiye...">
-                <button onclick="askOpenRouter()" class="v8-send">➤</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="ai-trigger" onclick="openV10Home()">
-    <span class="ai-robot">🤖</span>
-    <div class="ai-label">ASK AI</div>
-</div>
+<body>
 
 <div class="menu-overlay" id="overlay" onclick="toggleMenu()"></div>
 
-<div class="side-menu" id="sideMenu">
-    <h3 style="margin-top:0; color:var(--blue);">VidyaJobs Settings ⚙️</h3>
-    <div class="menu-item" onclick="editProfile()">👤 Edit Profile</div>
-    <div class="menu-item" onclick="showV10UltraDash()">🔥 V10 Ultra Dash</div>
-    <div class="menu-item" onclick="showResumeSection()">📝 Build Resume (New)</div>
-    <div class="menu-item" onclick="toggleDarkMode()">🌓 Switch Theme</div>
-    <div class="menu-item" onclick="location.reload()">🔄 Refresh Updates</div>
-    <div class="menu-item" onclick="startNewChat()" style="color:var(--blue);">✨ Start New Chat</div>
-    <div class="menu-item" onclick="clearAllV10()" style="color:orange;">🧹 Clear AI History</div>
-    <div class="menu-item" style="color:red; border:none;" onclick="logout()">🚪 Logout</div>
-</div>
-
 <header id="main-header" class="hidden">
-    <div class="logo-text" onclick="toggleMenu()">VidyaJobs.AI</div>
+    <div class="logo-text" onclick="toggleMenu()">ROZGAR HUB</div>
     <div style="display: flex; align-items: center; gap: 15px;">
-        <div onclick="toggleDarkMode()" id="mode-btn" style="cursor:pointer; font-size: 20px;">🌙</div>
-        <div id="user-initial" style="background:var(--light-blue); color:var(--blue); width:35px; height:35px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; border: 1px solid var(--blue);">U</div>
+        <i class="fa-solid fa-circle-half-stroke" onclick="toggleDarkMode()" style="font-size: 20px; color: var(--primary);"></i>
+        <div id="user-initial" style="background:var(--primary); color:white; width:35px; height:35px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800;">R</div>
     </div>
 </header>
 
 <div class="container">
-    <div id="login-sec" class="hidden">
-        <div class="login-card">
-            <h1 style="text-align:center; font-weight:900;">Welcome! 🚀</h1>
-            <label>Full Name</label>
-            <input type="text" id="u-name" class="input-box" placeholder="e.g. Rahul Raj">
-            <label>Education</label>
-            <div class="edu-grid">
-                <div class="edu-chip" onclick="toggleEdu(this, '10th')">10th Pass</div>
-                <div class="edu-chip" onclick="toggleEdu(this, '12th')">12th Pass</div>
-                <div class="edu-chip" onclick="toggleEdu(this, 'ITI')">ITI Pass</div>
-                <div class="edu-chip" onclick="toggleEdu(this, 'UG')">Undergraduate</div>
-            </div>
-            <button onclick="saveLogin()" class="btn-primary">Save Profile ⚡</button>
-        </div>
-    </div>
-
-    <div id="v10-ultra-dash" class="hidden">
-        <h3 style="font-weight:800; color:var(--blue);">🔥 V10 ULTRA AI TOOLS</h3>
-        <div class="dash-grid" style="margin-bottom:20px;">
-            <div class="edu-chip" onclick="showBox('ocr-box')">Image to Text</div>
-            <div class="edu-chip" onclick="showBox('pdf-box')">PDF Reader</div>
-        </div>
-        <div id="ocr-box" class="box">
-            <label>Upload Image for OCR</label>
-            <input type="file" id="img-input" class="input-box" accept="image/*">
-            <button onclick="performOCR()" class="btn-primary">Extract Text 🔍</button>
-            <pre id="ocrout" style="margin-top:10px;">Text result will appear here...</pre>
-        </div>
-        <div id="pdf-box" class="box">
-            <label>Upload PDF File</label>
-            <input type="file" id="pdfFile-input" class="input-box" accept=".pdf">
-            <button onclick="readPDFFile()" class="btn-primary">Read PDF 📄</button>
-            <pre id="pdfout" style="margin-top:10px;">PDF text will appear here...</pre>
-        </div>
-        <button onclick="showDash()" class="btn-load">Back to Home</button>
-    </div>
-
-    <div id="resume-sec" class="hidden">
-        <h3 style="font-weight:800;">AI Resume Builder 📄</h3>
-        <div class="card">
-            <label>Father's Name</label>
-            <input type="text" id="res-father" class="input-box" placeholder="Enter Father's Name">
-            <label>Skills</label>
-            <input type="text" id="res-skills" class="input-box" placeholder="e.g. Computer, ITI, Driving">
-            <label>Experience</label>
-            <textarea id="res-exp" class="input-box" style="height:80px;" placeholder="Any past work?"></textarea>
-            <button class="btn-primary resume-btn" onclick="downloadResume()">Download Resume 📥</button>
-            <button onclick="showDash()" style="width:100%; margin-top:10px; background:none; border:none; color:var(--text-muted); font-weight:800;">Back to Home</button>
-        </div>
-    </div>
-
+    
     <div id="dash-sec" class="hidden">
+        
         <div class="live-panel">
-            <div class="live-header">
-                <div class="live-dot"></div>
-                <span style="color:white; font-weight:800; font-size:14px;">LIVE UPDATES 🛰️</span>
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:15px;">
+                <span style="background:#ef4444; width:8px; height:8px; border-radius:50%;"></span>
+                <span style="font-size:12px; font-weight:800; letter-spacing:1px;">LIVE UPDATES</span>
             </div>
-            <div class="ticker-container">
-                <div class="ticker-col">
-                    <div class="ticker-title">New Jobs</div>
-                    <div id="job-ticker" class="scroll-box"><div class="ticker-item">Loading...</div></div>
+            <div class="ticker-container" style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                <div>
+                    <div style="font-size:10px; opacity:0.6; margin-bottom:5px;">JOBS</div>
+                    <div id="job-ticker" class="scroll-box"><div class="ticker-item">Fetching...</div></div>
                 </div>
-                <div class="ticker-col">
-                    <div class="ticker-title">Admit Cards</div>
-                    <div id="admit-ticker" class="scroll-box"><div class="ticker-item">Loading...</div></div>
+                <div>
+                    <div style="font-size:10px; opacity:0.6; margin-bottom:5px;">ADMIT CARD</div>
+                    <div id="admit-ticker" class="scroll-box"><div class="ticker-item">Fetching...</div></div>
                 </div>
             </div>
         </div>
 
         <div class="ai-search-container">
-            <div class="ai-search-inner">
-                <span class="ai-sparkle">✦</span>
-                <input type="text" id="main-search-inp" class="ai-search-input" placeholder="Ask anything (Hinglish/Eng)...">
-                <button class="voice-btn" onclick="startMicV10Search()">🎙️</button>
-                <button onclick="triggerSearch()" class="ai-btn">✨</button>
-            </div>
-            <div class="ai-mode-tag">App AI Support</div>
+            <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent);"></i>
+            <input type="text" id="main-search-inp" class="ai-search-input" placeholder="Railway Group D result kab aayega?">
+            <i class="fa-solid fa-microphone" onclick="startMicV10Search()" style="color: var(--text-muted); cursor:pointer;"></i>
+            <button onclick="triggerSearch()" style="background:var(--primary); border:none; color:white; width:35px; height:35px; border-radius:50%;"><i class="fa-solid fa-arrow-right" style="font-size:12px;"></i></button>
         </div>
 
-        <div class="tracker-card">
-            <div style="font-weight:800; color:var(--blue); font-size:14px; margin-bottom:10px;">📅 DAILY EXAM TARGET</div>
-            <div class="target-item"><input type="checkbox"> Today's Current Affairs</div>
-            <div class="target-item"><input type="checkbox"> Math/Reasoning Practice</div>
-            <div class="target-item"><input type="checkbox"> Science/GK Revision</div>
-        </div>
-
-        <h3 style="font-weight:800;">Top Categories</h3>
+        <h3 style="font-weight:800; font-size:16px;">Job Categories</h3>
         <div class="dash-grid">
-            <div class="dash-card" onclick="openJobs('latest Govt job vacancy 2026 apply online')"><i>🏛️</i><span>Govt Jobs</span></div>
-            <div class="dash-card" onclick="openJobs('new Railway recruitment vacancy 2026 NTPC Group D ALP')"><i>🚂</i><span>Railway</span></div>
-            <div class="dash-card" onclick="openJobs('latest ITI Pass Govt Jobs vacancy 2026 Apprentice')"><i>⚙️</i><span>ITI Jobs</span></div>
-            <div class="dash-card" onclick="openJobs('latest Remote work from home jobs vacancy 2026')"><i>🏠</i><span>Remote/WFH</span></div>
+            <div class="dash-card" onclick="openJobs('latest Govt job vacancy 2026')">
+                <i class="fa-solid fa-building-columns"></i>
+                <span>Govt Jobs</span>
+            </div>
+            <div class="dash-card" onclick="openJobs('Railway recruitment 2026 Group D')">
+                <i class="fa-solid fa-train"></i>
+                <span>Railway</span>
+            </div>
+            <div class="dash-card" onclick="openJobs('ITI Pass jobs 2026')">
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+                <span>ITI Jobs</span>
+            </div>
+            <div class="dash-card" onclick="openJobs('Work from home jobs')">
+                <i class="fa-solid fa-house-laptop"></i>
+                <span>Remote WFH</span>
+            </div>
         </div>
 
-        <h3 style="font-weight:800; margin-top:30px;">Help Desk 👥</h3>
-        <div class="comm-btn" onclick="showCommunityChat()">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <div style="background:var(--light-blue); width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px;">💬</div>
-                <div>
-                    <div style="font-weight:800; font-size:14px;">Community Help</div>
-                    <div style="font-size:11px; color:var(--text-muted);">Ask doubts & chat with others</div>
-                </div>
+        <div class="card" onclick="showCommunityChat()" style="margin-top:25px; display:flex; align-items:center; gap:15px; cursor:pointer;">
+            <div style="background:var(--primary-light); width:50px; height:50px; border-radius:15px; display:flex; align-items:center; justify-content:center;">
+                <i class="fa-solid fa-comments" style="color:var(--primary); font-size:20px;"></i>
             </div>
-            <div style="color:var(--blue); font-weight:800;">OPEN</div>
-        </div>
-
-        <h3 style="font-weight:800; margin-top:30px;">Direct Support</h3>
-        <a href="https://whatsapp.com/channel/0029VbCL3cTElagwBiU2aJ2N" target="_blank" class="social-link-card">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <div class="social-icon" style="background:#e7fbf0; color:#22c55e;">💬</div>
-                <div><div style="font-weight:800; font-size:14px;">WhatsApp Channel</div><div style="font-size:11px;">Join for daily updates</div></div>
+            <div style="flex:1;">
+                <div style="font-weight:800; font-size:15px;">Community Help</div>
+                <div style="font-size:12px; color:var(--text-muted);">Apne sawal poochein sabse</div>
             </div>
-            <div style="color:var(--blue); font-weight:800;">JOIN</div>
-        </a>
-
-        <a href="https://www.instagram.com/___rahul_yadav_._?igsh=b3ltc2FwaDd4bzB1" target="_blank" class="social-link-card">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <div class="social-icon" style="background:#fff0f6; color:#e1306c;">📸</div>
-                <div><div style="font-weight:800; font-size:14px;">Instagram Profile</div><div style="font-size:11px;">Follow for latest updates</div></div>
-            </div>
-            <div style="color:var(--blue); font-weight:800;">FOLLOW</div>
-        </a>
-    </div>
-
-    <div id="chat-sec" class="hidden">
-        <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
-            <button onclick="showDash()" style="border:none; background:none; font-size:20px; cursor:pointer;">⬅️</button>
-            <h3 style="margin:0; font-weight:800;">Community Chat</h3>
-        </div>
-        <div class="chat-container">
-            <div id="chat-display" class="chat-display"></div>
-            <div style="display:flex; gap:10px;">
-                <input type="text" id="chat-input" class="input-box" placeholder="Type your doubt..." style="margin:0;">
-                <button onclick="sendMessage()" class="ai-btn" style="border-radius:12px; width:50px; height:50px;">📤</button>
-            </div>
+            <i class="fa-solid fa-chevron-right" style="color:var(--text-muted); font-size:12px;"></i>
         </div>
     </div>
 
     <div id="res-sec" class="hidden">
-        <h3 style="font-weight:800; margin-bottom:15px;">Results Portal 📄</h3>
-        <div class="dash-grid">
-            <div class="dash-card" onclick="toggleResSub('magadh')" style="border: 2px solid var(--blue); background: var(--light-blue);"><i>🎓</i><span style="font-weight:800;">Magadh Uni.</span></div>
-            <div class="dash-card" onclick="toggleResSub('bihar-board')"><i>🏫</i><span>Bihar Board</span></div>
-            <div class="dash-card" onclick="toggleResSub('railway')"><i>🚂</i><span>Railway</span></div>
-            <div class="dash-card" onclick="toggleResSub('ssc')"><i>🦁</i><span>SSC</span></div>
-            <div class="dash-card" onclick="toggleResSub('police')"><i>👮</i><span>Bihar Police</span></div>
+        <h3 style="font-weight:800; margin-bottom:20px;">Results Portal</h3>
+        <div class="portal-btn-grid">
+            <div class="portal-item" onclick="toggleResSub('magadh')">
+                <i class="fa-solid fa-graduation-cap"></i> Magadh University
+            </div>
+            <div class="portal-item" onclick="toggleResSub('bihar-board')">
+                <i class="fa-solid fa-school"></i> Bihar Board (10th/12th)
+            </div>
+            <div class="portal-item" onclick="toggleResSub('ssc')">
+                <i class="fa-solid fa-user-shield"></i> SSC / Staff Selection
+            </div>
+        </div>
         </div>
 
-        <div id="sub-magadh" class="card hidden" style="margin-top:15px; background:var(--white); border: 2px solid var(--blue);">
-            <label>Select Session</label>
-            <select id="mu-session" class="year-input" style="margin-bottom:15px; width:100%;" onchange="updateMUSemButtons()">
-                <option value="">-- Choose Session --</option>
-                <option value="2024-28">Session 2024-2028</option>
-                <option value="2023-27">Session 2023-2027</option>
-                <option value="2022-26">Session 2022-2026</option>
-                <option value="2022-25">Session 2022-2025</option>
-                <option value="2021-24">Session 2021-2024</option>
-                <option value="2020-23">Session 2020-2023</option>
-            </select>
-            <label id="mu-type-label">Select Option</label>
-            <div id="mu-sem-container" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:15px;" class="hidden">
-                <button onclick="setResType(this, 'Semester 1')" class="pill">Sem 1</button>
-                <button onclick="setResType(this, 'Semester 2')" class="pill">Sem 2</button>
-                <button onclick="setResType(this, 'Semester 3')" class="pill">Sem 3</button>
-                <button onclick="setResType(this, 'Semester 4')" class="pill">Sem 4</button>
-                <button onclick="setResType(this, 'Semester 5')" class="pill">Sem 5</button>
-                <button onclick="setResType(this, 'Semester 6')" class="pill">Sem 6</button>
-                <button onclick="setResType(this, 'Semester 7')" class="pill">Sem 7</button>
-                <button onclick="setResType(this, 'Semester 8')" class="pill">Sem 8</button>
-            </div>
-            <div id="mu-part-container" style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:15px;" class="hidden">
-                <button onclick="setResType(this, 'Part 1')" class="pill">Part 1</button>
-                <button onclick="setResType(this, 'Part 2')" class="pill">Part 2</button>
-                <button onclick="setResType(this, 'Part 3')" class="pill">Part 3</button>
-            </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;" id="mu-action-grid">
-                <button onclick="muAction('Result')" class="btn-primary" style="padding:12px; font-size:12px; background:#28a745;">Check Result ✅</button>
-                <button id="mu-btn-exam" onclick="muAction('Exam Form')" class="btn-primary" style="padding:12px; font-size:12px; background:#ffc107; color:black;">Exam Form 📝</button>
-            </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
-                <button id="mu-btn-adm" onclick="muAction('Admission')" class="btn-load" style="margin:0; width:100%; border-color:#17a2b8; color:#17a2b8;">Admission 🎓</button>
-                <button onclick="muAction('Admit Card')" class="btn-load" style="margin:0; width:100%;">Admit Card 📥</button>
-            </div>
-        </div>
+</div>
 
-        <div id="sub-bihar-board" class="card hidden" style="margin-top:15px; background:var(--light-blue);">
-            <div style="display:flex; gap:10px;"><button onclick="setResType(this, 'Matric')" class="pill" style="flex:1;">Matric (10th)</button><button onclick="setResType(this, 'Inter')" class="pill" style="flex:1;">Inter (12th)</button></div>
-            <input type="number" id="year-bihar" class="year-input" placeholder="Enter Year (e.g. 2025)">
-            <button onclick="finalResSearch('Bihar Board', 'year-bihar')" class="btn-primary" style="margin-top:10px;">Check Result ✅</button>
-        </div>
-
-        <div id="sub-railway" class="card hidden" style="margin-top:15px; background:var(--light-blue);">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-                <button onclick="setResType(this, 'Group D')" class="pill">Group D</button>
-                <button onclick="setResType(this, 'ALP')" class="pill">ALP</button>
-                <button onclick="setResType(this, 'NTPC')" class="pill">NTPC</button>
-                <button onclick="setResType(this, 'Technician')" class="pill">Technician</button>
-            </div>
-            <input type="number" id="year-railway" class="year-input" placeholder="Enter Year (e.g. 2024)">
-            <button onclick="finalResSearch('Railway', 'year-railway')" class="btn-primary" style="margin-top:10px;">Check Result ✅</button>
-        </div>
-
-        <div id="sub-ssc" class="card hidden" style="margin-top:15px; background:var(--light-blue);">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-                <button onclick="setResType(this, 'SSC MTS')" class="pill">MTS</button>
-                <button onclick="setResType(this, 'SSC GD')" class="pill">GD</button>
-                <button onclick="setResType(this, 'SSC CGL')" class="pill">CGL</button>
-                <button onclick="setResType(this, 'SSC CHSL')" class="pill">CHSL</button>
-            </div>
-            <input type="number" id="year-ssc" class="year-input" placeholder="Enter Year (e.g. 2025)">
-            <button onclick="finalResSearch('SSC', 'year-ssc')" class="btn-primary" style="margin-top:10px;">Check Result ✅</button>
-        </div>
-
-        <div id="sub-police" class="card hidden" style="margin-top:15px; background:var(--light-blue);">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-                <button onclick="setResType(this, 'Constable')" class="pill">Constable</button>
-                <button onclick="setResType(this, 'SI')" class="pill">SI (Daroga)</button>
-                <button onclick="setResType(this, 'Driver')" class="pill">Driver</button>
-            </div>
-            <input type="number" id="year-police" class="year-input" placeholder="Enter Year (e.g. 2024)">
-            <button onclick="finalResSearch('Bihar Police', 'year-police')" class="btn-primary" style="margin-top:10px;">Check Result ✅</button>
-        </div>
-    </div>
-
-    <div id="feed-sec" class="hidden">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <button onclick="goBackToList()" id="back-btn" class="hidden" style="color:var(--blue); border:none; background:none; font-weight:800;">← Back</button>
-            <h3 id="f-title" style="margin:0; font-weight:800; font-size:16px;">LISTING</h3>
-            <button onclick="showDash()" style="color:var(--blue); border:none; background:none; font-weight:800;">Home</button>
-        </div>
-        <div id="list"></div>
-        <div id="load-more-container" class="hidden">
-            <button onclick="loadMore()" class="btn-load">Load More 🔄</button>
-        </div>
-    </div>
+<div id="ai-trigger" onclick="openV10Home()">
+    <i class="fa-solid fa-robot"></i>
 </div>
 
 <div id="bottom-bar" class="bottom-nav hidden">
-    <div class="nav-item active" onclick="showDash()"><i>🏠</i>Home</div>
-    <div class="nav-item" onclick="showResults()"><i>📄</i>Results</div>
-    <div class="nav-item" onclick="openV10Home()"><i>🤖</i>AI Chat</div>
-    <div class="nav-item" onclick="toggleMenu()"><i>⚙️</i>Settings</div>
+    <div class="nav-item active" onclick="showDash()">
+        <i class="fa-solid fa-house-chimney"></i>Home
+    </div>
+    <div class="nav-item" onclick="showResults()">
+        <i class="fa-solid fa-file-invoice"></i>Results
+    </div>
+    <div class="nav-item" onclick="openV10Home()">
+        <i class="fa-solid fa-microchip"></i>AI Chat
+    </div>
+    <div class="nav-item" onclick="toggleMenu()">
+        <i class="fa-solid fa-bars-staggered"></i>Menu
+    </div>
 </div>
 
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+<script>
+    // ... (Aapka original JS logic yahan continue hoga) ...
+    // Note: showDash() function mein `setActiveNav` ko update kar dena
+</script>
 
 </body>
 </html>
