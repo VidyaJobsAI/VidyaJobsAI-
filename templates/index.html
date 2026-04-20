@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VidyaJobsAI - Professional Portal</title>
+    
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#007bff">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="app-body">
+
+<div id="ai-modal">
+    <div class="ai-modal-content">
+        <div class="ai-modal-header">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <button onclick="backHomeV10()" style="background:none; border:none; font-size:22px; color:var(--blue); cursor:pointer;">⬅</button>
+                <span style="font-weight: 800; color: var(--blue);">🤖 VidyaJobsAI V10 PRO</span>
+            </div>
+            <span style="font-size:10px; font-weight:800; color:var(--text-muted);">ONLINE</span>
+        </div>
+        <div class="v8-chat-box">
+            <div id="ai-chat-body" class="v8-messages"></div>
+            <div class="v8-input-box">
+                <button id="voiceBtn" style="background:none; border:none; font-size:20px; cursor:pointer;">🎙️</button>
+                <input type="text" id="ai-input" class="v8-input" placeholder="Kuch bhi puchiye...">
+                <button onclick="askOpenRouter()" class="v8-send">➤</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ai-trigger" onclick="openV10Home()">
+    <span class="ai-robot">🤖</span>
+    <div class="ai-label">ASK AI</div>
+</div>
+
+<div class="menu-overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<div class="side-menu" id="sideMenu">
+    <h3 style="margin-top:0; color:var(--blue);">App Settings ⚙️</h3>
+    <div class="menu-item" onclick="editProfile()">👤 Edit Profile</div>
+    <div class="menu-item" onclick="showV10UltraDash()">🔥 V10 Ultra Dash</div>
+    <div class="menu-item" onclick="showResumeSection()">📝 Build Resume (New)</div>
+    <div class="menu-item" onclick="toggleDarkMode()">🌓 Switch Theme</div>
+    <div class="menu-item" onclick="location.reload()">🔄 Refresh Updates</div>
+    <div class="menu-item" onclick="startNewChat()" style="color:var(--blue);">✨ Start New Chat</div>
+    <div class="menu-item" onclick="clearAllV10()" style="color:orange;">🧹 Clear AI History</div>
+    <div class="menu-item" style="color:red; border:none;" onclick="logout()">🚪 Logout</div>
+</div>
+
+<header id="main-header" class="hidden">
+    <div class="logo-text" onclick="toggleMenu()">VidyaJobsAI</div>
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <div onclick="toggleDarkMode()" id="mode-btn" style="cursor:pointer; font-size: 20px;">🌙</div>
+        <div id="user-initial" style="background:var(--light-blue); color:var(--blue); width:35px; height:35px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; border: 1px solid var(--blue);">U</div>
+    </div>
+</header>
+
+<div class="container">
+    <div id="login-sec" class="hidden">
+        <div class="login-card">
+            <h1 style="text-align:center; font-weight:900;">Welcome! 🚀</h1>
+            <label>Full Name</label>
+            <input type="text" id="u-name" class="input-box" placeholder="e.g. Rahul Raj">
+            <label>Education</label>
+            <div class="edu-grid">
+                <div class="edu-chip" onclick="toggleEdu(this, '10th')">10th Pass</div>
+                <div class="edu-chip" onclick="toggleEdu(this, '12th')">12th Pass</div>
+                <div class="edu-chip" onclick="toggleEdu(this, 'ITI')">ITI Pass</div>
+                <div class="edu-chip" onclick="toggleEdu(this, 'UG')">Undergraduate</div>
+            </div>
+            <button onclick="saveLogin()" class="btn-primary">Save Profile ⚡</button>
+        </div>
+    </div>
+
+    <div id="v10-ultra-dash" class="hidden">
+        <h3 style="font-weight:800; color:var(--blue);">🔥 V10 ULTRA AI TOOLS</h3>
+        <div class="dash-grid" style="margin-bottom:20px;">
+            <div class="edu-chip" onclick="showBox('ocr-box')">Image to Text</div>
+            <div class="edu-chip" onclick="showBox('pdf-box')">PDF Reader</div>
+        </div>
+        <div id="ocr-box" class="box">
+            <label>Upload Image for OCR</label>
+            <input type="file" id="img-input" class="input-box" accept="image/*">
+            <button onclick="performOCR()" class="btn-primary">Extract Text 🔍</button>
+            <pre id="ocrout" style="margin-top:10px;">Text result will appear here...</pre>
+        </div>
+        <div id="pdf-box" class="box">
+            <label>Upload PDF File</label>
+            <input type="file" id="pdfFile-input" class="input-box" accept=".pdf">
+            <button onclick="readPDFFile()" class="btn-primary">Read PDF 📄</button>
+            <pre id="pdfout" style="margin-top:10px;">PDF text will appear here...</pre>
+        </div>
+        <button onclick="showDash()" class="btn-load">Back to Home</button>
+    </div>
+
+    <div id="resume-sec" class="hidden">
+        <h3 style="font-weight:800;">AI Resume Builder 📄</h3>
+        <div class="card">
+            <label>Father's Name</label>
+            <input type="text" id="res-father" class="input-box" placeholder="Enter Father's Name">
+            <label>Skills</label>
+            <input type="text" id="res-skills" class="input-box" placeholder="e.g. Computer, ITI, Driving">
+            <label>Experience</label>
+            <textarea id="res-exp" class="input-box" style="height:80px;" placeholder="Any past work?"></textarea>
+            <button class="btn-primary resume-btn" onclick="downloadResume()">Download Resume 📥</button>
+            <button onclick="showDash()" style="width:100%; margin-top:10px; background:none; border:none; color:var(--text-muted); font-weight:800;">Back to Home</button>
+        </div>
+    </div>
+
+    <div id="dash-sec" class="hidden">
+        <div class="live-panel">
+            <div class="live-header">
+                <div class="live-dot"></div>
+                <span style="color:white; font-weight:800; font-size:14px;">LIVE UPDATES 🛰️</span>
+            </div>
+            <div class="ticker-container">
+                <div class="ticker-col">
+                    <div class="ticker-title">New Jobs</div>
+                    <div id="job-ticker" class="scroll-box"><div class="ticker-item">Loading...</div></div>
+                </div>
+                <div class="ticker-col">
+                    <div class="ticker-title">Admit Cards</div>
+                    <div id="admit-ticker" class="scroll-box"><div class="ticker-item">Loading...</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ai-search-container">
+            <div class="ai-search-inner">
+                <span class="ai-sparkle">✦</span>
+                <input type="text" id="main-search-inp" class="ai-search-input" placeholder="Ask anything (Hinglish/Eng)...">
+                <button class="voice-btn" onclick="startMicV10Search()">🎙️</button>
+                <button onclick="triggerSearch()" class="ai-btn">✨</button>
+            </div>
+            <div class="ai-mode-tag">App AI Support</div>
+        </div>
+
+        <div class="tracker-card">
+            <div style="font-weight:800; color:var(--blue); font-size:14px; margin-bottom:10px;">📅 DAILY EXAM TARGET</div>
+            <div class="target-item"><input type="checkbox"> Today's Current Affairs</div>
+            <div class="target-item"><input type="checkbox"> Math/Reasoning Practice</div>
+            <div class="target-item"><input type="checkbox"> Science/GK Revision</div>
+        </div>
+
+        <h3 style="font-weight:800;">Top Categories</h3>
+        <div class="dash-grid">
+            <div class="dash-card" onclick="openJobs('latest Govt job vacancy 2026 apply online')"><i>🏛️</i><span>Govt Jobs</span></div>
+            <div class="dash-card" onclick="openJobs('new Railway recruitment vacancy 2026 NTPC Group D ALP')"><i>🚂</i><span>Railway</span></div>
+            <div class="dash-card" onclick="openJobs('latest ITI Pass Govt Jobs vacancy 2026 Apprentice')"><i>⚙️</i><span>ITI Jobs</span></div>
+            <div class="dash-card" onclick="openJobs('latest Remote work from home jobs vacancy 2026')"><i>🏠</i><span>Remote/WFH</span></div>
+        </div>
+
+        <h3 style="font-weight:800; margin-top:30px;">Help Desk 👥</h3>
+        <div class="comm-btn" onclick="showCommunityChat()">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div style="background:var(--light-blue); width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px;">💬</div>
+                <div>
+                    <div style="font-weight:800; font-size:14px;">Community Help</div>
+                    <div style="font-size:11px; color:var(--text-muted);">Ask doubts & chat with others</div>
+                </div>
+            </div>
+            <div style="color:var(--blue); font-weight:800;">OPEN</div>
+        </div>
+        </div>
+
+    </div>
+
+<div id="bottom-bar" class="bottom-nav hidden">
+    <div class="nav-item active" onclick="showDash()"><i>🏠</i>Home</div>
+    <div class="nav-item" onclick="showResults()"><i>📄</i>Results</div>
+    <div class="nav-item" onclick="openV10Home()"><i>🤖</i>AI Chat</div>
+    <div class="nav-item" onclick="toggleMenu()"><i>⚙️</i>Settings</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
