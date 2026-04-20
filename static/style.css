@@ -1,1 +1,45 @@
 
+:root { 
+    --main: #121212; 
+    --blue: #007bff; 
+    --light-blue: #e7f1ff; 
+    --bg: #f8fafc; 
+    --white: #ffffff; 
+    --text-muted: #64748b; 
+    --neon-glow: rgba(0, 123, 255, 0.6); 
+    --ai-gradient: linear-gradient(90deg, #4285f4, #9b72cb, #d96570); 
+}
+body.dark-mode { 
+    --bg: #0f172a; 
+    --white: #1e293b; 
+    --main: #f1f5f9; 
+    --text-muted: #94a3b8; 
+    --light-blue: #1e3a8a; 
+    --neon-glow: rgba(0, 210, 255, 0.8); 
+}
+body { background: var(--bg); font-family: 'Inter', sans-serif; margin: 0; padding: 0; padding-bottom: 120px; color: var(--main); transition: 0.3s; overflow-x: hidden; }
+.container { max-width: 500px; margin: 0 auto; padding: 15px; }
+
+header { background: var(--white); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; box-shadow: 0 0 15px var(--neon-glow); }
+.logo-text { font-weight: 800; font-size: 20px; color: var(--blue); letter-spacing: -0.5px; cursor: pointer; text-shadow: 0 0 10px var(--blue); }
+
+.live-panel, .dash-card, .social-link-card, .job-card, .card, .pill, .input-box, .login-card, .edu-chip, .details-card, .tracker-card, .comm-btn {
+    border: 1px solid var(--blue) !important;
+    box-shadow: 0 0 15px var(--neon-glow) !important;
+    transition: 0.3s;
+}
+
+/* Animations & Tickers */
+.live-dot { width: 12px; height: 12px; background: #ff4757; border-radius: 50%; animation: blink 1s infinite; box-shadow: 0 0 15px #ff4757; }
+@keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+@keyframes scrollUp { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+/* AI Modal & Chat Box styling here... */
+#ai-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: none; align-items: flex-start; justify-content: center; }
+#ai-modal.active { display: flex; }
+.ai-modal-content { width: 100%; max-width: 500px; background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+/* Dashboard Boxes & Rest of CSS... */
+.box { display:none; background:var(--white); padding:15px; border-radius:10px; margin-bottom:10px; }
+.hidden { display: none !important; }
