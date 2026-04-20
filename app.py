@@ -22,7 +22,7 @@ CORS(app)
 # ===============================
 # CONFIG & API KEYS
 # ===============================
-SERPER_API_KEY = "675ec80f6858652b8add27fbe3ab09371a6faaae"
+SERPER_API_KEY = "54de19999d1d72defabcbd9af637ebbbabdf4e2b"
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 UPLOAD_FOLDER = "uploads"
