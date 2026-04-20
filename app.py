@@ -1,4 +1,3 @@
-
 import requests
 from flask import Flask, render_template, request, jsonify, send_from_directory, make_response, send_file
 from flask_cors import CORS
@@ -15,14 +14,19 @@ from werkzeug.utils import secure_filename
 from PyPDF2 import PdfReader
 from PIL import Image
 import pytesseract
+from dotenv import load_dotenv
+
+# Local testing ke liye keys load karega
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
 # ===============================
-# CONFIG & API KEYS
+# CONFIG & API KEYS (SECURE)
 # ===============================
-SERPER_API_KEY = "54de19999d1d72defabcbd9af637ebbbabdf4e2b"
+# Maine ise environment variable kar diya hai taaki tera GitHub leak na ho
+SERPER_API_KEY = os.getenv("SERPER_API_KEY") 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 UPLOAD_FOLDER = "uploads"
@@ -47,6 +51,7 @@ chat_messages = [
 
 # MODEL LIST (AUTO FALLBACK)
 MODELS = [
+    "google/gemini-2.0-flash-001", # Sabse fast hai, ise top pe rakha hai
     "openai/gpt-4o-mini",
     "openai/gpt-3.5-turbo",
     "google/gemini-2.0-flash-lite-preview-02-05:free",
@@ -70,46 +75,66 @@ def save_user_chat(uid, data):
     with open(get_chat_file(uid), "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-# --- NEW FUNCTIONS (STEP 1 & 2) ---
+# --- NEW FUNCTIONS ---
 def get_live_data(query):
+    # Check if key exists
+    if not SERPER_API_KEY:
+        return "Serper API key missing."
+        
     headers = {"X-API-KEY": SERPER_API_KEY, "Content-Type": "application/json"}
     payload = {"q": query, "gl": "in", "hl": "en"}
 
-    r = requests.post(
-        "https://google.serper.dev/search",
-        headers=headers,
-        json=payload,
-        timeout=10
-    )
+    try:
+        r = requests.post(
+            "https://google.serper.dev/search",
+            headers=headers,
+            json=payload,
+            timeout=10
+        )
+        results = r.json().get("organic", [])
+        context = ""
+        for item in results[:5]:
+            context += f"- {item.get('title')} : {item.get('snippet')}\n"
+        return context
+    except:
+        return ""
 
-    results = r.json().get("organic", [])
-
-    context = ""
-    for item in results[:5]:
-        context += f"- {item.get('title')} : {item.get('snippet')}\n"
-
-    return context
-
+# 🔥 TERA UPDATED FALLBACK LOGIC (DYNAMIC TIMEOUT)
 def ask_ai(messages):
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json"
     }
 
-    payload = {
-        "model": "openai/gpt-4o-mini",
-        "messages": messages,
-        "temperature": 0.7
-    }
+    # Loop through models
+    for model_name in MODELS:
+        try:
+            # Gemini ke liye 20 sec, baaki ke liye 8 sec
+            current_timeout = 20 if "gemini" in model_name.lower() else 8
+            
+            payload = {
+                "model": model_name,
+                "messages": messages,
+                "temperature": 0.7
+            }
 
-    r = requests.post(
-        "https://openrouter.ai/api/v1/chat/completions",
-        headers=headers,
-        json=payload,
-        timeout=40
-    )
+            r = requests.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                headers=headers,
+                json=payload,
+                timeout=current_timeout
+            )
 
-    return r.json()["choices"][0]["message"]["content"]
+            if r.status_code == 200:
+                return r.json()["choices"][0]["message"]["content"]
+            else:
+                print(f"Model {model_name} failed, trying next...")
+                continue
+        except Exception as e:
+            print(f"Error calling {model_name}: {e}")
+            continue
+
+    return "Bhai saare models busy hain, thodi der baad try kar! 😅"
 
 # --- BASIC ROUTES ---
 @app.route('/manifest.json')
@@ -187,9 +212,6 @@ def fetch_jobs():
     except Exception as e:
         return jsonify({"error": str(e)})
 
-# ===============================
-# LIVE SEARCH (V10)
-# ===============================
 @app.route("/live_search", methods=["POST"])
 def live_search():
     try:
@@ -274,9 +296,6 @@ def ocr():
     except Exception as e:
         return jsonify({"error": str(e)})
 
-# ===============================
-# IMAGE & AI ROUTES
-# ===============================
 @app.route("/generate_image", methods=["POST"])
 @app.route("/image", methods=["POST"])
 def generate_image():
@@ -290,7 +309,7 @@ def generate_image():
     except Exception as e:
         return jsonify({"error": str(e)})
 
-# --- UPDATED ROUTE (STEP 3) ---
+# --- UPDATED ROUTE ---
 @app.route("/ask_ai_v10", methods=["POST"])
 def ask_ai_v10():
     try:
@@ -300,7 +319,6 @@ def ask_ai_v10():
 
         history = load_user_chat(uid)
 
-        # 🔥 detect if live data needed
         keywords = ["job", "latest", "news", "result", "update", "vacancy"]
         need_live = any(k in msg.lower() for k in keywords)
 
@@ -310,17 +328,13 @@ def ask_ai_v10():
 
         system_prompt = f"""
 You are VidyaJobsAI-HUB V10 ULTRA AI.
-
 RULES:
 - Always use latest info if provided
 - If live data exists, prioritize it
 - Be accurate and simple
-- If unsure, say "latest update may vary"
-
 LIVE DATA:
 {live_context}
 """
-
         messages = [{"role": "system", "content": system_prompt}]
         messages += history[-10:]
         messages.append({"role": "user", "content": msg})
@@ -329,19 +343,11 @@ LIVE DATA:
 
         history.append({"role": "user", "content": msg})
         history.append({"role": "assistant", "content": answer})
-
         save_user_chat(uid, history)
 
-        return jsonify({
-            "reply": answer,
-            "live_used": bool(live_context)
-        })
-
+        return jsonify({"reply": answer, "live_used": bool(live_context)})
     except Exception as e:
-        return jsonify({
-            "reply": "AI system busy hai bhai 😅",
-            "error": str(e)
-        })
+        return jsonify({"reply": "AI system busy hai bhai 😅", "error": str(e)})
 
 # ===============================
 # CHAT MANAGEMENT
@@ -390,22 +396,19 @@ def delete_chat():
 
 # --- COMMUNITY CHAT SYSTEM ---
 @app.route('/get_messages')
-@app.route('/chat/get')
 def get_messages():
     return jsonify(chat_messages)
 
 @app.route('/send_message', methods=['POST'])
-@app.route('/chat/send', methods=['POST'])
 def send_message():
     data = request.get_json()
     new_msg = {
         "user": data.get('user', 'Guest'), 
         "msg": data.get('msg', ''), 
-        "time": time.strftime("%I:%M %p") if "time" not in data else data.get("time")
+        "time": time.strftime("%I:%M %p")
     }
     chat_messages.append(new_msg)
     return jsonify({"status": "sent", "ok": True})
 
-# ================= RUN =================
 if __name__ == '__main__':
     app.run(debug=True)
